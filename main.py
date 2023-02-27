@@ -1,5 +1,14 @@
 import pygame
-from config import *
+
+# Const (kinda)
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 600
+SECTION_WIDTH = SCREEN_WIDTH / 4
+SECTION_HEIGHT = SCREEN_HEIGHT / 5
+
+BLACK = 0, 0, 0
+BUTTON_COLOR = 200, 245, 20
+BUTTON_SELECTED_COLOR = 160, 195, 10
 
 # Pygame init
 pygame.init()
@@ -7,10 +16,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Calculator")
 
 button_font = pygame.font.SysFont('Consolas', 42)
+calc_font = pygame.font.SysFont('Consolas', 64)	
 
 # Global variables
 buttonList = []
-
+calcDisplayText = ""
+x = 5
+y = 2
 
 class CalculatorButton:
 	def __init__(self, text, value, x, y):
@@ -22,8 +34,8 @@ class CalculatorButton:
 		self.rendered_text = button_font.render(self.text, True, BLACK)
 		self.text_width, self.text_height = button_font.size(self.text)
 
-		self.width = SCREEN_WIDTH / 4
-		self.height = SCREEN_HEIGHT / 5
+		self.width = SECTION_WIDTH
+		self.height = SECTION_HEIGHT
 		self.center_x = self.x + self.width / 2
 		self.center_y = self.y + self.height / 2
 		self.padding = 1
@@ -31,6 +43,8 @@ class CalculatorButton:
 
 
 	def check_if_clicked_on(self, mouse_x, mouse_y):
+		global calcDisplayText
+
 		max_distance_x = self.width / 2 - self.padding
 		max_distance_y = self.height / 2 - self.padding
 
@@ -39,9 +53,11 @@ class CalculatorButton:
 
 		if is_within_x and is_within_y:
 			self.selected = True
+			calcDisplayText = self.text
+			print(self.text)
+			print(self.value)
 		else:
 			self.selected = False
-
 
 
 	def blit_self(self):
@@ -75,28 +91,31 @@ def divide(x, y):
 		return "error"
 
 
+def clear():
+	pass
+
+
+def count():
+	pass
+
+
 def buttons_init():
-	buttons = [["7", "8", "9", "+"],
-				["4", "5", "6", "-"],
-				["1", "2", "3", "×"],
-				["C", "0", "=", "÷"]]
-	y = SCREEN_HEIGHT / 5
+	global x, y
+	buttons = [[["7", 7], ["8", 8], ["9", 9], ["+", sum(x, y)]],
+			   [["4", 4], ["5", 5], ["6", 6], ["-", subtract(x, y)]],
+			   [["1", 1], ["2", 2], ["3", 3], ["×", multiply(x, y)]],
+			   [["C", clear()], ["0", 0 ], ["=", count()], ["÷", divide(x, y)]]]
+
+	y = SECTION_HEIGHT
 
 	for row in buttons:
 		x = 0
 
 		for i in row:
-			buttonList.append(CalculatorButton(i, None, x, y))
-			x += SCREEN_WIDTH / 4
+			buttonList.append(CalculatorButton(i[0], None, x, y))
+			x += SECTION_WIDTH
 
-		y += SCREEN_HEIGHT / 5
-
-
-def update_screen():
-	screen.fill(BLACK)
-	for button in buttonList:
-		button.blit_self()
-	pygame.display.flip()
+		y += SECTION_HEIGHT
 
 
 def keyboard_input():
@@ -116,6 +135,25 @@ def mouse_input():
 	if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
 		for button in buttonList:
 			button.selected = False
+
+
+def update_calc_display():
+	padding = 30
+	calc_text_width, calc_text_height = calc_font.size(calcDisplayText)
+	x = SCREEN_WIDTH - padding - calc_text_width
+	y = SECTION_HEIGHT / 2 - calc_text_height / 2
+	calc_rendered_text = calc_font.render(calcDisplayText, True, BUTTON_COLOR)
+	screen.blit(calc_rendered_text, (x, y))
+
+
+def update_screen():
+	screen.fill(BLACK)
+	update_calc_display()
+
+	for button in buttonList:
+		button.blit_self()
+	
+	pygame.display.flip()
 
 
 # App init
