@@ -53,9 +53,8 @@ class CalculatorButton:
 
 		if is_within_x and is_within_y:
 			self.selected = True
-			calcDisplayText = self.text
-			print(self.text)
-			print(self.value)
+			if self.value in [1,2,3,4,5,6,7,8,9]:
+				calcDisplayText = self.text
 		else:
 			self.selected = False
 
