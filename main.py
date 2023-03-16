@@ -21,6 +21,7 @@ calc_font = pygame.font.SysFont('Consolas', 64)
 # Global variables
 buttonList = []
 calcDisplayText = ""
+
 x = 5
 y = 2
 
@@ -87,23 +88,80 @@ def divide(x, y):
 	try:
 		return x / y
 	except ZeroDivisionError:
-		return "error"
+		return "error: division by 0"
 
 
 def clear():
 	pass
 
 
-def count():
-	pass
+def calculate():
+	global fDict
+	calcInstructions = ["7", "sum", "1", "2"]
+	index = 0
+	
+	# Make all numbers to numbers and put them together if neccesary
+	for item in calcInstructions:
+		if item.isdigit():
+		
+			toInt = int(item)
+			calcInstructions.pop(index)
+			calcInstructions.insert(index, toInt)
+
+			print(calcInstructions)
+			if index != 0:
+				if type(calcInstructions[index-1]) == int:
+					newItem = str(calcInstructions[index-1]) + str(calcInstructions[index])
+					newItem = int(newItem)
+					calcInstructions.pop(index-1)
+					calcInstructions.pop(index-1)
+					calcInstructions.pop(index-1)
+					calcInstructions.insert(index, newItem)
+
+		index += 1
+	
+	# Do all calculations
+	index = 0
+	for item in calcInstructions:
+		if type(item) == str:
+			operation = fDict[item]
+			val1 = calcInstructions[index - 1]
+			val2 = calcInstructions[index + 1]
+
+			doneOperation = operation(val1, val2)
+
+			calcInstructions.pop(index-1)
+			calcInstructions.pop(index-1)
+			calcInstructions.insert(index, doneOperation)
+
+
+		index += 1
+			
+
+	print(calcInstructions)
+
+
+
+
+fDict = {
+	"sum" : sum,
+	"subtract" : subtract,
+	"multiply" : multiply,
+	"divide" : divide,
+	"clear" : clear,
+	"calculate" : calculate
+}
+
+
+calculate()
 
 
 def buttons_init():
 	global x, y
-	buttons = [[["7", 7], ["8", 8], ["9", 9], ["+", sum(x, y)]],
-			   [["4", 4], ["5", 5], ["6", 6], ["-", subtract(x, y)]],
-			   [["1", 1], ["2", 2], ["3", 3], ["×", multiply(x, y)]],
-			   [["C", clear()], ["0", 0 ], ["=", count()], ["÷", divide(x, y)]]]
+	buttons = [[["7", 7], ["8", 8], ["9", 9], ["+", "sum"]],
+			   [["4", 4], ["5", 5], ["6", 6], ["-", "subtract"]],
+			   [["1", 1], ["2", 2], ["3", 3], ["×", "multiply"]],
+			   [["C", "clear"], ["0", 0 ], ["=", "calculate"], ["÷", "divide"]]]
 
 	y = SECTION_HEIGHT
 
@@ -156,8 +214,8 @@ def update_screen():
 
 
 # App init
-buttons_init()
-update_screen()
+# buttons_init()
+# update_screen()
 
 
 quitApp = False
