@@ -54,9 +54,9 @@ class CalculatorButton:
 
 		if is_mouse_within_x and is_mouse_within_y:
 			self.selected = True
-			if self.value.isdigit():
-				print("z")
-				calcDisplayText = self.text
+			#if self.value:
+			#	print("z")
+			calcDisplayText = self.text
 
 		else:
 			self.selected = False
@@ -119,7 +119,6 @@ def calculate():
 					calcInstructions.pop(index-1)
 					calcInstructions.insert(index, newItem)
 
-
 		index += 1
 	
 	# Do all calculations
@@ -142,14 +141,12 @@ def calculate():
 	print(calcInstructions)
 
 
-
-
 fDict = {
-	"sum" : sum,
-	"subtract" : subtract,
-	"multiply" : multiply,
-	"divide" : divide,
-	"clear" : clear,
+	"sum" 		: sum,
+	"subtract" 	: subtract,
+	"multiply" 	: multiply,
+	"divide" 	: divide,
+	"clear" 	: clear,
 	"calculate" : calculate
 }
 
