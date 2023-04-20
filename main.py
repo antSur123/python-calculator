@@ -1,6 +1,6 @@
 import pygame
 
-# Const (kinda)
+# Consts (kinda)
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 SECTION_WIDTH = SCREEN_WIDTH / 4
@@ -49,13 +49,15 @@ class CalculatorButton:
 		max_distance_x = self.width / 2 - self.padding
 		max_distance_y = self.height / 2 - self.padding
 
-		is_within_x = -max_distance_x  < mouse_x - self.center_x < max_distance_x 
-		is_within_y = -max_distance_y < mouse_y - self.center_y < max_distance_y
+		is_mouse_within_x = -max_distance_x  < mouse_x - self.center_x < max_distance_x 
+		is_mouse_within_y = -max_distance_y < mouse_y - self.center_y < max_distance_y
 
-		if is_within_x and is_within_y:
+		if is_mouse_within_x and is_mouse_within_y:
 			self.selected = True
-			if self.value in [1,2,3,4,5,6,7,8,9]:
+			if self.value.isdigit():
+				print("z")
 				calcDisplayText = self.text
+
 		else:
 			self.selected = False
 
@@ -100,7 +102,7 @@ def calculate():
 	calcInstructions = ["7", "sum", "1", "2"]
 	index = 0
 	
-	# Make all numbers to numbers and put them together if neccesary
+	# Make all str numbers to ints and put them together if neccesary
 	for item in calcInstructions:
 		if item.isdigit():
 		
@@ -115,8 +117,8 @@ def calculate():
 					newItem = int(newItem)
 					calcInstructions.pop(index-1)
 					calcInstructions.pop(index-1)
-					calcInstructions.pop(index-1)
 					calcInstructions.insert(index, newItem)
+
 
 		index += 1
 	
@@ -125,18 +127,17 @@ def calculate():
 	for item in calcInstructions:
 		if type(item) == str:
 			operation = fDict[item]
-			val1 = calcInstructions[index - 1]
-			val2 = calcInstructions[index + 1]
+			x = calcInstructions[index - 1]
+			y = calcInstructions[index + 1]
 
-			doneOperation = operation(val1, val2)
+			doneOperation = operation(x, y)
 
-			calcInstructions.pop(index-1)
-			calcInstructions.pop(index-1)
-			calcInstructions.insert(index, doneOperation)
-
+			print(calcInstructions)
+			calcInstructions[index] = doneOperation
+			calcInstructions.pop(index + 1)
+			calcInstructions.pop(index - 1)
 
 		index += 1
-			
 
 	print(calcInstructions)
 
@@ -214,8 +215,8 @@ def update_screen():
 
 
 # App init
-# buttons_init()
-# update_screen()
+buttons_init()
+update_screen()
 
 
 quitApp = False
